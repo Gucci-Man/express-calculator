@@ -1,7 +1,8 @@
 const express = require('express')
 const ExpressError = require('./expressError')
-
 const app = express();
+
+const {findMean} = require('./helpers')
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -27,14 +28,14 @@ app.get('/mean', function(req, res, next) {
             intArr.push(parseInt(num));
         }
 
-        for(let i=0; i<intArr.length; i++) {
+        /* for(let i=0; i<intArr.length; i++) {
             total += intArr[i];
         }
         // Calculate mean
         mean = total/intArr.length
-        console.log(`mean is ${mean}`)
+        console.log(`mean is ${mean}`) */
         
-        return res.status(200).json({operation: "mean", value: mean});
+        return res.status(200).json({operation: "mean", value: findMean(intArr)});
     } catch (e) {
         next(e);
     }
