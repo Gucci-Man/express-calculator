@@ -1,7 +1,12 @@
 
 function findMean(arr) {
-    let mean=null;
+    let mean=0;
     let total=null;
+
+    // if array is empty, mean is 0
+    if (arr.length === 0) {
+        return mean;
+    }
 
     for(let i=0; i<arr.length; i++) {
         total += arr[i];
