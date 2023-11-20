@@ -2,7 +2,7 @@ const express = require('express')
 const ExpressError = require('./expressError')
 const app = express();
 
-const {findMean} = require('./helpers')
+const {findMean, findMedian, findMode} = require('./helpers')
 
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -11,8 +11,6 @@ app.use(express.urlencoded({extended: true}));
 app.get('/mean', function(req, res, next) {
     try{
         const {nums} = req.query
-        let mean=null;
-        let total=null;
         const intArr = []; // will contain the integer converted numbers
 
         if (!nums) {
@@ -27,13 +25,6 @@ app.get('/mean', function(req, res, next) {
             };
             intArr.push(parseInt(num));
         }
-
-        /* for(let i=0; i<intArr.length; i++) {
-            total += intArr[i];
-        }
-        // Calculate mean
-        mean = total/intArr.length
-        console.log(`mean is ${mean}`) */
         
         return res.status(200).json({operation: "mean", value: findMean(intArr)});
     } catch (e) {
@@ -59,22 +50,8 @@ app.get('/median', function(req, res, next) {
             };
             intArr.push(parseInt(num));
         }
-        // sort array
-        const sortedNums = intArr.sort();
-
-        // Find the midpoint
-        const midpoint = Math.floor(sortedNums.length / 2);
-
-        // Calculate the median
-        if (sortedNums.length % 2 === 0) {
-            // Even-length array
-            const median = (sortedNums[midpoint - 1] + sortedNums[midpoint]) / 2;
-            return res.status(200).json({operation: "median", value: median})
-        } else {
-            // Odd-length array
-            const median = sortedNums[midpoint];
-            return res.status(200).json({operation: "median", value: median})
-        };
+       
+        return res.status(200).json({operation: "median", value: findMedian(intArr)});
 
     } catch (e) {
         next(e);
@@ -100,29 +77,7 @@ app.get('/mode', function(req, res, next) {
             };
             intArr.push(parseInt(num));
         }
-
-        // Iterate through the array and update the frequency table
-        for(let num of intArr) {
-            if (freqTable[num] === undefined) {
-                freqTable[num] = 1;
-            } else {
-                freqTable[num]++;
-            }
-        }
-
-        // Identify the mode
-        let modeVal = null;
-        let highFreq = 0;
-
-        for (let num in freqTable) {
-            const frequency = freqTable[num];
-            if (frequency > highFreq) {
-                modeVal = num;
-                highFreq = frequency;
-            }
-        }
-
-        return res.status(200).json({operation: "mode", value: modeVal});
+        return res.status(200).json({operation: "mode", value: findMode(intArr)});
 
     } catch (e) {
         next(e);
