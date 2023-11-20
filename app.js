@@ -36,7 +36,46 @@ app.get('/mean', function(req, res, next) {
     } catch (e) {
         next(e);
     }
-})
+});
+
+app.get('/median', function(req, res, next) {
+    try{
+        const {nums} = req.query
+        const intArr = []; // will contain the integer converted numbers
+
+        if (!nums) {
+            throw new ExpressError("nums are required.", 400)
+        };
+        // split string then convert to int
+        const numsArr = nums.split(',')
+        
+        for(let num of numsArr) {
+            if(!(parseInt(num))) {
+                throw new ExpressError(`${num} is not a number`, 400)
+            };
+            intArr.push(parseInt(num));
+        }
+        // sort array
+        const sortedNums = intArr.sort();
+
+        // Find the midpoint
+        const midpoint = Math.floor(sortedNums.length / 2);
+
+        // Calculate the median
+        if (sortedNums.length % 2 === 0) {
+            // Even-length array
+            const median = (sortedNums[midpoint - 1] + sortedNums[midpoint]) / 2;
+            return res.status(200).json({operation: "median", value: median})
+        } else {
+            // Odd-length array
+            const median = sortedNums[midpoint];
+            return res.status(200).json({operation: "median", value: median})
+        };
+
+    } catch (e) {
+        next(e);
+    }
+});
 
 // If page is not found, throw error
 app.use((req, res, next) => {
